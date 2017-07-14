@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,7 +15,7 @@ public class SearchResponse {
     @SuppressWarnings("unused") @Nullable private ServiceError error;
     @SuppressWarnings("unused") @SerializedName("batchcomplete") private boolean batchComplete;
     @SuppressWarnings("unused") @SerializedName("continue") @Nullable private Map<String, String> continuation;
-    @SuppressWarnings("unused") @Nullable private List<SearchResponseItem> pages;
+    @Nullable private SearchResponseQuery query;
 
 
     public boolean batchComplete() {
@@ -27,8 +26,8 @@ public class SearchResponse {
         return continuation;
     }
 
-    @Nullable public List<SearchResponseItem> pages() {
-        return pages;
+    @Nullable public SearchResponseQuery query() {
+        return query;
     }
 
     @Nullable public ServiceError getError() {
@@ -48,6 +47,6 @@ public class SearchResponse {
     }
 
     public boolean success() {
-        return error == null;
+        return error == null && query != null;
     }
 }

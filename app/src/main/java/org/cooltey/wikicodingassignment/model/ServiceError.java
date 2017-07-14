@@ -3,7 +3,7 @@ package org.cooltey.wikicodingassignment.model;
 import android.support.annotation.Nullable;
 
 /**
- * Search Response Item Model
+ * Service Error Model
  */
 
 public class ServiceError {

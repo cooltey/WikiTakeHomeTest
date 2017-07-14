@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.cooltey.wikicodingassignment.MainActivity">
+    tools:context="org.cooltey.wikicodingassignment.GalleryActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackground">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:background="@color/colorBlack">
+    </android.support.v4.view.ViewPager>
 
 </RelativeLayout>

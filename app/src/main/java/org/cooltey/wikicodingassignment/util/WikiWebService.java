@@ -14,9 +14,9 @@ import retrofit2.http.Query;
  * Web Service for Search Images
  */
 
-public interface WebService{
+public interface WikiWebService {
 
-    @GET("w/api.php?action=query&prop=pageimages&format=json&piprop=thumbnail&generator=prefixsearch"
+    @GET("w/api.php?action=query&prop=pageimages&format=json&piprop=thumbnail&generator=prefixsearch&formatversion=2"
             + "&pilimit=" + Constants.PREFERRED_QUERY_NUMBERS
             + "&gpslimit=" + Constants.PREFERRED_QUERY_NUMBERS
             + "&pithumbsize=" + Constants.PREFERRED_THUMB_SIZE)

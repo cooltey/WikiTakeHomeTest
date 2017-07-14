@@ -6,9 +6,11 @@ import android.util.Log;
 
 import org.cooltey.wikicodingassignment.Constants;
 import org.cooltey.wikicodingassignment.model.SearchResponse;
-import org.cooltey.wikicodingassignment.util.WebService;
+import org.cooltey.wikicodingassignment.model.SearchResponseItem;
+import org.cooltey.wikicodingassignment.util.WikiWebService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,7 +26,7 @@ public class WebServicePresenterCompl implements WebServicePresenter{
 
     private static final String LOG_ERROR_TAG = "Search Response Error";
 
-    private WebService mWebService;
+    private WikiWebService mWikiWebService;
 
     @Override
     public void init() {
@@ -36,21 +38,39 @@ public class WebServicePresenterCompl implements WebServicePresenter{
 
 
         // create web service
-        mWebService = retrofit.create(WebService.class);
+        mWikiWebService = retrofit.create(WikiWebService.class);
     }
 
     // do the query and get responses
     @Override
-    public void doSearch(ArrayList<String> keywords, @NonNull final ServiceCallback callback) {
-        if(mWebService != null) {
-            final Call<SearchResponse> responseCall = mWebService.request(TextUtils.join("|", keywords));
+    public void doSearch(List<String> keywords, @NonNull final ServiceCallback callback) {
+        if(mWikiWebService != null) {
+            final Call<SearchResponse> responseCall = mWikiWebService.request(TextUtils.join(",", keywords));
 
             responseCall.enqueue(new Callback<SearchResponse>() {
                 @Override
                 public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
 
                     if (response.body().success()) {
-                        callback.success(responseCall, response.body().pages());
+
+                        // remove empty images
+                        List<SearchResponseItem> newList = new ArrayList<>();
+
+                        for(SearchResponseItem item : response.body().query().pages()){
+                            if(item.thumbUrl() != null){
+                                newList.add(item);
+                            }
+                        }
+
+                        if(newList.size() == 0){
+
+                            callback.empty(responseCall);
+                        }else{
+
+                            callback.success(responseCall, newList);
+                        }
+
+
                     }else if(response.body().hasError()){
                         callback.failure(responseCall, response.body().getError().getDetails());
 
@@ -74,6 +94,6 @@ public class WebServicePresenterCompl implements WebServicePresenter{
     // clear the service
     @Override
     public void clear() {
-        mWebService = null;
+        mWikiWebService = null;
     }
 }
