@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -46,13 +45,9 @@ public class ViewPagerAdapter extends PagerAdapter {
 		View itemView = mLayoutInflater.inflate(R.layout.item_gallery_view, container, false);
 
 		TouchImageView imageView = (TouchImageView) itemView.findViewById(R.id.img);
-		TextView titleView = (TextView) itemView.findViewById(R.id.title);
 
 		// display image
 		mImageLoader.displayImage(mImageData.get(position) , imageView);
-
-		// display title
-		titleView.setText(mTitleData.get(position));
 
 		container.addView(itemView);
 

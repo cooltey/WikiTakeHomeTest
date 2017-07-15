@@ -1,14 +1,13 @@
 package org.cooltey.wikicodingassignment;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -28,20 +27,34 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String LOG_TAG = "MainActivity";
+    private static final int SEARCH_CODE = 123;
+    public static final String SEARCH_KEYWORD = "keyword";
+
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private RecyclerViewAdapter mRecyclerViewAdapter;
-    private SearchView searchView = null;
-    private SearchView.OnQueryTextListener queryTextListener;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // setup view
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
+
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.BLACK);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                searchAction("");
+            }
+        });
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
@@ -50,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchAction(String keywords){
         if(keywords != null && keywords.length() > 0) {
+
+            mSwipeRefreshLayout.setRefreshing(true);
+
             // start web service
             WebServicePresenter webServicePresenter = new WebServicePresenterCompl();
             webServicePresenter.init();
@@ -68,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                             // setup adapter
                             mRecyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, results);
                             mRecyclerView.setAdapter(mRecyclerViewAdapter);
+
+                            mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }
 
@@ -75,13 +93,18 @@ public class MainActivity extends AppCompatActivity {
                     public void empty(@NonNull Call<SearchResponse> call){
                         // empty
                         Toast.makeText(getApplicationContext(), "No results, please try another keyword", Toast.LENGTH_LONG).show();
+
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void failure(@NonNull Call<SearchResponse> call, @NonNull String msg) {
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
+
 
             }
         }
@@ -91,32 +114,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        if(searchItem != null){
-            searchView = (SearchView) searchItem.getActionView();
-        }
-
-        if(searchView != null){
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            queryTextListener = new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    Log.i("onQueryTextChange", newText);
-                    return true;
-                }
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-
-                    // search
-                    searchAction(query);
-
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);
-        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -125,16 +122,34 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                // Not implemented here
+                // go to search activity
+
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, SearchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent, SEARCH_CODE);
+
                 return false;
             default:
                 break;
         }
-        searchView.setOnQueryTextListener(queryTextListener);
         return super.onOptionsItemSelected(item);
     }
 
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case SEARCH_CODE:
+                // do search
+                if(data != null) {
+                    String getKeyword = data.getStringExtra(SEARCH_KEYWORD);
+                    searchAction(getKeyword);
+                }
+            break;
+        }
+    }
 
 }

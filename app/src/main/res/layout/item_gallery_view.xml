@@ -8,19 +8,9 @@
         android:id="@+id/img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBlack"
+        android:background="@color/colorWhite"
         android:layout_centerInParent="true">
     </org.cooltey.wikicodingassignment.util.TouchImageView>
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/general_margin_seventy"
-        android:background="@color/colorBlack"
-        android:textColor="@color/colorWhite"
-        android:padding="@dimen/general_margin_fifth"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/general_text_size_16"
-        android:alpha="0.8"
-        android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

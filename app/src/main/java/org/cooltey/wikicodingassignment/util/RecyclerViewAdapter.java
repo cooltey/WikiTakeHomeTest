@@ -31,8 +31,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ImageLoader mImageLoader;
     private Activity mContext;
     private Dialog mDialog;
-    private ArrayList<String> mTitleData = new ArrayList<>();;
-    private ArrayList<String> mImageData = new ArrayList<>();;
+    private ArrayList<String> mTitleData = new ArrayList<>();
+    private ArrayList<String> mImageData = new ArrayList<>();
+
+    public static final String PASS_DATA_IMAGE = "image";
+    public static final String PASS_DATA_TITLE = "title";
+    public static final String PASS_DATA_KEYWORD = "keyword";
+    public static final String PASS_DATA_POSITION = "position";
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View cardView;
@@ -145,9 +150,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Intent intent = new Intent();
                 intent.setClass(mContext, GalleryActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putStringArrayListExtra("title", mTitleData);
-                intent.putStringArrayListExtra("image", mImageData);
-                intent.putExtra("position", position);
+                intent.putStringArrayListExtra(PASS_DATA_TITLE, mTitleData);
+                intent.putStringArrayListExtra(PASS_DATA_IMAGE, mImageData);
+                intent.putExtra(PASS_DATA_KEYWORD, "Keyword");
+                intent.putExtra(PASS_DATA_POSITION, position);
                 mContext.startActivity(intent);
             }
         });

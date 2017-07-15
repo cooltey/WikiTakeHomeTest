@@ -9,8 +9,43 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/colorBlack">
     </android.support.v4.view.ViewPager>
 
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/general_margin_seventy"
+        android:alpha="0.8"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorBlack">
+        <TextView
+            android:id="@+id/cap_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/colorWhite"
+            android:padding="@dimen/general_margin_fifth"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/general_text_size_14"
+            android:shadowColor="@color/colorDarkGrey"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:layout_toLeftOf="@+id/cap_count"/>
+
+        <TextView
+            android:id="@+id/cap_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/colorWhite"
+            android:padding="@dimen/general_margin_fifth"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/general_text_size_12"
+            android:shadowColor="@color/colorDarkGrey"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
 </RelativeLayout>

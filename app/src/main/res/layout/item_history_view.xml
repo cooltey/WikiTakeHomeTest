@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/general_margin_twenty">
+        <ImageView
+            android:id="@+id/history_icon"
+            android:layout_width="@dimen/general_margin_twenty"
+            android:layout_height="@dimen/general_margin_twenty"
+            android:src="@drawable/ic_search_history"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/history_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/delete_icon"
+            android:layout_toRightOf="@+id/history_icon"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/general_text_size_14"
+            android:layout_marginLeft="@dimen/general_margin_ten"
+            android:layout_centerVertical="true"/>
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="@dimen/general_margin_twenty"
+            android:layout_height="@dimen/general_margin_twenty"
+            android:src="@drawable/ic_delete"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:background="@color/colorGrey"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/general_margin_fifth"
+        android:layout_marginBottom="@dimen/general_margin_fifth"/>
+</RelativeLayout>
