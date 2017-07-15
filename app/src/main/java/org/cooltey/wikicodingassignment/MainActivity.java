@@ -1,10 +1,13 @@
 package org.cooltey.wikicodingassignment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +21,7 @@ import org.cooltey.wikicodingassignment.model.SearchResponse;
 import org.cooltey.wikicodingassignment.model.SearchResponseItem;
 import org.cooltey.wikicodingassignment.presenter.WebServicePresenter;
 import org.cooltey.wikicodingassignment.presenter.WebServicePresenterCompl;
+import org.cooltey.wikicodingassignment.util.NetworkChecker;
 import org.cooltey.wikicodingassignment.util.RecyclerViewAdapter;
 
 import java.util.Arrays;
@@ -46,7 +50,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(new NetworkChecker(this).getStatus()){
+            mainProcess();
+        }else{
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setMessage(getString(R.string.no_network));
+            alertDialog.setPositiveButton(getString(R.string.no_network_btn), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+        }
+    }
 
+    private void mainProcess(){
         // setup view
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mEmptyView = (TextView) findViewById(R.id.empty_view);
@@ -64,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // setup empty view
-        if(mRecyclerViewAdapter == null){
+        if (mRecyclerViewAdapter == null) {
             mEmptyView.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         }
@@ -74,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
-    private void searchAction(final String keywords){
-        if(keywords != null && keywords.length() > 0) {
+    private void searchAction(final String keywords) {
+        if (keywords != null && keywords.length() > 0) {
 
             mSwipeRefreshLayout.setRefreshing(true);
 
@@ -106,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void empty(@NonNull Call<SearchResponse> call){
+                    public void empty(@NonNull Call<SearchResponse> call) {
                         // empty
-                        Toast.makeText(getApplicationContext(), "No results, please try another keyword", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.no_results), Toast.LENGTH_LONG).show();
 
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
@@ -121,11 +140,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
-            }else{
+            } else {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
-        }else{
+        } else {
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
@@ -157,19 +175,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode){
+        switch (requestCode) {
             case SEARCH_CODE:
                 // do search
-                if(data != null) {
+                if (data != null) {
                     getKeyword = data.getStringExtra(SEARCH_KEYWORD);
                     searchAction(getKeyword);
                 }
-            break;
+                break;
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setMessage(getString(R.string.close_app));
+        alertDialog.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+    }
 }

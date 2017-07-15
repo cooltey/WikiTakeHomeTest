@@ -69,6 +69,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
                 @Override
                 public void onClick(final View view) {
 
+                    // show dialog
                     AlertDialog.Builder mAlertDialog = new AlertDialog.Builder(mContext);
 
                     mAlertDialog.setMessage(mContext.getString(R.string.dialog_msg));

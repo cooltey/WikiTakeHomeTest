@@ -13,6 +13,8 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import org.cooltey.wikicodingassignment.util.DatabaseHelper;
 import org.cooltey.wikicodingassignment.util.SearchHistoryAdapter;
@@ -26,6 +28,7 @@ public class SearchActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private SearchHistoryAdapter mSearchHistoryAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView mEmptyView;
     private DatabaseHelper mDatabaseHelper;
 
 
@@ -42,11 +45,18 @@ public class SearchActivity extends AppCompatActivity {
 
         // setup view
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView.setHasFixedSize(true);
 
         // setup adapter
         mSearchHistoryAdapter = new SearchHistoryAdapter(this, mDatabaseHelper.getKeywords());
         mRecyclerView.setAdapter(mSearchHistoryAdapter);
+
+        // setup empty view
+        if(mSearchHistoryAdapter.getItemCount() == 0){
+            mEmptyView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout.setColorSchemeColors(Color.BLACK);

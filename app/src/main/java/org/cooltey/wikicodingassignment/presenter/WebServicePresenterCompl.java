@@ -75,7 +75,7 @@ public class WebServicePresenterCompl implements WebServicePresenter{
                         callback.failure(responseCall, response.body().getError().getDetails());
 
                     }else{
-                        callback.failure(responseCall, "An unknown error occurred");
+                        callback.empty(responseCall);
                     }
                 }
 
@@ -91,9 +91,4 @@ public class WebServicePresenterCompl implements WebServicePresenter{
         }
     }
 
-    // clear the service
-    @Override
-    public void clear() {
-        mWikiWebService = null;
-    }
 }

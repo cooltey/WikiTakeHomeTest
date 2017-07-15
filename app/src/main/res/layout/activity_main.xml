@@ -29,5 +29,6 @@
         android:shadowColor="@color/colorGrey"
         android:gravity="center"
         android:text="@string/empty_main"
+        android:visibility="gone"
         android:textColor="@color/colorDarkGrey"/>
 </RelativeLayout>

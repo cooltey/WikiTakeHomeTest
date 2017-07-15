@@ -4,9 +4,10 @@
     tools:context=".HomeActivity">
 
     <item
-        android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/search_text"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:id="@+id/action_hq"
+        android:checkable="true"
+        android:title="@string/hq_img"
+        app:actionViewClass="android.widget.CheckBox"
         app:showAsAction="always" />
+
 </menu>

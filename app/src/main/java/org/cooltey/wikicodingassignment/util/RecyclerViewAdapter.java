@@ -3,20 +3,19 @@ package org.cooltey.wikicodingassignment.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import org.cooltey.wikicodingassignment.Constants;
 import org.cooltey.wikicodingassignment.GalleryActivity;
 import org.cooltey.wikicodingassignment.R;
 import org.cooltey.wikicodingassignment.model.SearchResponseItem;
@@ -34,6 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mTitleData = new ArrayList<>();
     private ArrayList<String> mImageData = new ArrayList<>();
     private String mKeyword;
+    private int mLastPosition = -1;
 
     public static final String PASS_DATA_IMAGE = "image";
     public static final String PASS_DATA_TITLE = "title";
@@ -42,6 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View cardView;
+
         public ViewHolder(View v) {
             super(v);
             cardView = v;
@@ -59,8 +60,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
-    public void transData(){
-        for(SearchResponseItem rowData : mData){
+    public void transData() {
+        for (SearchResponseItem rowData : mData) {
             mTitleData.add(rowData.title());
             mImageData.add(rowData.thumbUrl());
         }
@@ -81,12 +82,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         TextView titleView = (TextView) holder.cardView.findViewById(R.id.card_text);
         ImageView imageView = (ImageView) holder.cardView.findViewById(R.id.card_img);
+        final ProgressBar progressView = (ProgressBar) holder.cardView.findViewById(R.id.card_img_progress);
 
         // setup title
         titleView.setText(mData.get(position).title());
 
         // display image
-        mImageLoader.displayImage(mData.get(position).thumbUrl(), imageView);
+        mImageLoader.displayImage(mData.get(position).thumbUrl(), imageView, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                progressView.setVisibility(View.GONE);
+            }
+        });
 
 
         // setup long press event
@@ -95,50 +102,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public boolean onLongClick(View view) {
 
-                // trigger the popup dialog
-                AlertDialog.Builder mAlterDialog = new AlertDialog.Builder(mContext);
-
-                // get dialog view
-                View dialogView = mContext.getLayoutInflater().inflate(R.layout.dialog_preview, null);
-                ImageView dialogImageView = (ImageView) dialogView.findViewById(R.id.image_view);
-
-                // setup
-                mDialog = mAlterDialog.setView(dialogView).create();
-
-                // the other way to present dialog
-                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-                layoutParams.copyFrom(mDialog.getWindow().getAttributes());
-
-                // get width and make it square
-                DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-                float dpWidth = displayMetrics.widthPixels;
-                float dpHeight = displayMetrics.heightPixels;
-
-                // check orientation
-                if (mContext.getResources().getConfiguration().orientation ==
-                        mContext.getResources().getConfiguration().ORIENTATION_LANDSCAPE) {
-
-                    // fixed edge
-                    layoutParams.width = (int) dpHeight - Constants.ORIENTATION_ADJUST;
-                    layoutParams.height = (int) dpHeight - Constants.ORIENTATION_ADJUST;
-
-                } else {
-
-                    // fixed edge
-                    layoutParams.width = (int) dpWidth;
-                    layoutParams.height = (int) dpWidth;
-                }
-
-                mDialog.show();
-
-                // show dialog with attributes
-                mDialog.getWindow().setAttributes(layoutParams);
-                // animation
-                mDialog.getWindow().setWindowAnimations(R.style.DialogTheme);
+                PopupImageHandler popupImageHandler = new PopupImageHandler(mContext, mDialog);
 
                 // show view
-                mImageLoader.displayImage(mData.get(position).thumbUrl(), dialogImageView);
+                mImageLoader.displayImage(mData.get(position).thumbUrl(), popupImageHandler.getImageView());
 
+                mDialog = popupImageHandler.getDialog();
 
                 return true;
             }
@@ -180,4 +149,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return mData.size();
     }
+
 }

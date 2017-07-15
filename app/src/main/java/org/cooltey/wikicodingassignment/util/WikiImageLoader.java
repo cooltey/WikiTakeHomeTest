@@ -20,6 +20,7 @@ public class WikiImageLoader {
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
                     .considerExifParams(true)
+                    .resetViewBeforeLoading(true)
                     .build();
 
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)

@@ -16,7 +16,6 @@ import retrofit2.Call;
 public interface WebServicePresenter {
     @NonNull void init();
     @NonNull void doSearch(List<String> keywords, ServiceCallback callback);
-    @NonNull void clear();
 
     interface ServiceCallback {
 

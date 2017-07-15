@@ -9,7 +9,10 @@ package org.cooltey.wikicodingassignment.util;
  * Updated By: singpolyma
  * -------------------
  * Extends Android ImageView to include pinch zooming, panning, fling and double tap zoom.
+ *
+ * see @https://github.com/MikeOrtiz/TouchImageView
  */
+
 
 import android.annotation.TargetApi;
 import android.content.Context;
