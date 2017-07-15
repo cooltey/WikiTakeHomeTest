@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">WikiCodingAssignment</string>
     <string name="search_hint">Search...</string>
-    <string name="search_title">Search Images</string>
+    <string name="search_title">Enter Keywords</string>
+    <string name="empty_main">Welcome to WikiCodingAssignment\nPlease hit the search button to search.</string>
+    <string name="dialog_msg">Delete this item?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="search_text">Searching: </string>
 </resources>

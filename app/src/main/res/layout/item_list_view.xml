@@ -10,29 +10,28 @@
         android:id="@+id/card_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/cardview_max_height"
+        android:layout_height="wrap_content"
         card_view:cardCornerRadius="@dimen/cardview_radius"
         android:layout_margin="@dimen/cardview_margin">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="?android:attr/selectableItemBackground">
 
             <!-- Cropped Image -->
             <ImageView
                 android:id="@+id/card_img"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.85"
+                android:layout_height="@dimen/cardview_max_height"
                 android:scaleType="centerCrop"/>
 
 
             <TextView
                 android:id="@+id/card_text"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.15"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:textSize="@dimen/general_text_size_14"
                 android:fontFamily="sans-serif"

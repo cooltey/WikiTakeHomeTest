@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.cooltey.wikicodingassignment.model.SearchResponse;
@@ -27,13 +29,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String LOG_TAG = "MainActivity";
-    private static final int SEARCH_CODE = 123;
+    private static final int SEARCH_CODE = 100;
     public static final String SEARCH_KEYWORD = "keyword";
 
     private RecyclerView mRecyclerView;
+    private TextView mEmptyView;
     private LinearLayoutManager mLayoutManager;
     private RecyclerViewAdapter mRecyclerViewAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private String getKeyword;
 
 
     @Override
@@ -44,24 +49,32 @@ public class MainActivity extends AppCompatActivity {
 
         // setup view
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView.setHasFixedSize(true);
 
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout.setColorSchemeColors(Color.BLACK);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                searchAction("");
+                searchAction(getKeyword);
             }
         });
+
+        // setup empty view
+        if(mRecyclerViewAdapter == null){
+            mEmptyView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
-    private void searchAction(String keywords){
+    private void searchAction(final String keywords){
         if(keywords != null && keywords.length() > 0) {
 
             mSwipeRefreshLayout.setRefreshing(true);
@@ -81,8 +94,11 @@ public class MainActivity extends AppCompatActivity {
                     public void success(@NonNull Call<SearchResponse> call, @NonNull List<SearchResponseItem> results) {
                         if (results != null) {
 
+                            mEmptyView.setVisibility(View.GONE);
+                            mRecyclerView.setVisibility(View.VISIBLE);
+
                             // setup adapter
-                            mRecyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, results);
+                            mRecyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, results, keywords);
                             mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
                             mSwipeRefreshLayout.setRefreshing(false);
@@ -106,7 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
+            }else{
+                mSwipeRefreshLayout.setRefreshing(false);
             }
+        }else{
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -122,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                // go to search activity
 
+                // go to search activity
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, SearchActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -145,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             case SEARCH_CODE:
                 // do search
                 if(data != null) {
-                    String getKeyword = data.getStringExtra(SEARCH_KEYWORD);
+                    getKeyword = data.getStringExtra(SEARCH_KEYWORD);
                     searchAction(getKeyword);
                 }
             break;

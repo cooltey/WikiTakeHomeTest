@@ -33,6 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Dialog mDialog;
     private ArrayList<String> mTitleData = new ArrayList<>();
     private ArrayList<String> mImageData = new ArrayList<>();
+    private String mKeyword;
 
     public static final String PASS_DATA_IMAGE = "image";
     public static final String PASS_DATA_TITLE = "title";
@@ -47,13 +48,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public RecyclerViewAdapter(Activity context, List<SearchResponseItem> data) {
+    public RecyclerViewAdapter(Activity context, List<SearchResponseItem> data, String keyword) {
         mContext = context;
         mData = data;
         mImageLoader = WikiImageLoader.init(mContext);
+        mKeyword = keyword;
 
         // for intent to activity
         transData();
+
     }
 
     public void transData(){
@@ -87,7 +90,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
         // setup long press event
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener(){
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
 
             @Override
             public boolean onLongClick(View view) {
@@ -112,14 +115,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 float dpHeight = displayMetrics.heightPixels;
 
                 // check orientation
-                if(mContext.getResources().getConfiguration().orientation ==
-                        mContext.getResources().getConfiguration().ORIENTATION_LANDSCAPE){
+                if (mContext.getResources().getConfiguration().orientation ==
+                        mContext.getResources().getConfiguration().ORIENTATION_LANDSCAPE) {
 
                     // fixed edge
                     layoutParams.width = (int) dpHeight - Constants.ORIENTATION_ADJUST;
                     layoutParams.height = (int) dpHeight - Constants.ORIENTATION_ADJUST;
 
-                }else{
+                } else {
 
                     // fixed edge
                     layoutParams.width = (int) dpWidth;
@@ -137,7 +140,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 mImageLoader.displayImage(mData.get(position).thumbUrl(), dialogImageView);
 
 
-
                 return true;
             }
 
@@ -152,7 +154,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putStringArrayListExtra(PASS_DATA_TITLE, mTitleData);
                 intent.putStringArrayListExtra(PASS_DATA_IMAGE, mImageData);
-                intent.putExtra(PASS_DATA_KEYWORD, "Keyword");
+                intent.putExtra(PASS_DATA_KEYWORD, mKeyword);
                 intent.putExtra(PASS_DATA_POSITION, position);
                 mContext.startActivity(intent);
             }
@@ -161,12 +163,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.cardView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_UP ||
-                   motionEvent.getAction() == MotionEvent.ACTION_CANCEL){
-                        // close dialog
-                        if(mDialog != null && mDialog.isShowing()){
-                            mDialog.dismiss();
-                        }
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                        motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
+                    // close dialog
+                    if (mDialog != null && mDialog.isShowing()) {
+                        mDialog.dismiss();
+                    }
                 }
                 return false;
             }

@@ -1,8 +1,10 @@
 package org.cooltey.wikicodingassignment.util;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,13 +63,33 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
             historyView.setText(getSearchText);
 
+            deleteView.setTag(getId);
+
             deleteView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    // remove
-                    mDatabase.deleteKeyword(getId);
-                    mData = mDatabase.getKeywords();
-                    notifyItemRemoved(position);
+                public void onClick(final View view) {
+
+                    AlertDialog.Builder mAlertDialog = new AlertDialog.Builder(mContext);
+
+                    mAlertDialog.setMessage(mContext.getString(R.string.dialog_msg));
+                    mAlertDialog.setPositiveButton(mContext.getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // remove
+                            long id = (long) view.getTag();
+                            mDatabase.deleteKeyword(id);
+                            mData = mDatabase.getKeywords();
+                            notifyDataSetChanged();
+                        }
+                    });
+                    mAlertDialog.setNegativeButton(mContext.getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    mAlertDialog.setCancelable(false);
+                    mAlertDialog.show();
+
+
                 }
             });
 
